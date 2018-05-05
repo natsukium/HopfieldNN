@@ -8,8 +8,8 @@ def main():
     HNN = HopfieldNeuralNetwork()
     HNN.train(xs)
 
-    n = xs.shape[0]
-    return [HNN.recall(x[i]) for i in range(n)]
+    ys = HNN.recall(x)
+    return ys
 
 
 if __name__ == "__main__":

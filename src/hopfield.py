@@ -7,22 +7,25 @@ class HopfieldNeuralNetwork(object):
         self.w[np.eye(xs.shape[1]) == 1] = 0
         return self.w / xs.shape[0]
 
-    def recall(self, x, threshold=None):
+    def recall(self, xs, threshold=None):
         if threshold is None:
-            self.threshold = np.zeros(x.shape)
+            self.threshold = np.zeros(xs.shape[1])
         else:
             self.threshold = threshold
         delta = 1e-8
 
-        E = self._energy(x)
-        while True:
-            x = np.sign(self.w@x - self.threshold)
-            E_new = self._energy(x)
-            if abs(E_new - E) < delta:
-                break
-            E = E_new
+        ys = []
+        for x in xs:
+            E = self._energy(x)
+            while True:
+                x = np.sign(self.w@x - self.threshold)
+                E_new = self._energy(x)
+                if abs(E_new - E) < delta:
+                    break
+                E = E_new
+            ys.append(x)
 
-        return x
+        return ys
 
     def _energy(self, x):
         return - np.einsum('ij,i,j', self.w, x, x) / 2 \
